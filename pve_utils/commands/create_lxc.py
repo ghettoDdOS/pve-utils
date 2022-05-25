@@ -6,15 +6,19 @@ from pve_utils.resources import ProxmoxNode
 
 
 @click.command()
-@click.argument("node_name")
-@click.argument("host_name")
-def create_lxc(node_name: str, host_name: str):
-    """
-    Creates proxmox LXC CT if is not exist
-    1. host_name: Name of CT
-    2. node_name: Name of Proxmox Node
-    other settings provides with env
-    """
+@click.option(
+    "-N", "--node-name", required=True, type=str, help="Name of Proxmox Node."
+)
+@click.option("-H", "--host-name", required=True, type=str, help="Name of CT.")
+@click.option(
+    "-C",
+    "--create",
+    is_flag=True,
+    default=False,
+    type=bool,
+    help="Create CT if doesn`t exist.",
+)
+def create_lxc(node_name: str, host_name: str, create: bool):
     conn = ProxmoxAPI(
         settings.PROXMOX_URL,
         port=settings.PROXMOX_PORT,
@@ -24,7 +28,7 @@ def create_lxc(node_name: str, host_name: str):
     )
 
     node_worker = ProxmoxNode(conn, node_name)
-    node_worker.get_lxc(host_name, create=True)
+    node_worker.get_lxc(host_name, create=create)
 
 
 if __name__ == "__main__":

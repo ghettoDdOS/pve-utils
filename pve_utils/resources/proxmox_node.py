@@ -95,7 +95,8 @@ class ProxmoxNode:
         if len(filtered_ct) > 0:
             pprint.info(f"Container: {name} already exist")
             return filtered_ct[0]
-        elif len(filtered_ct) < 1 and create:
+        elif len(filtered_ct) < 1:
             pprint.info(f"Container: {name} does not exist")
-            return self.create_lxc(name)
+            if create:
+                return self.create_lxc(name)
         return None

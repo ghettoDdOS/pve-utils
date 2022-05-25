@@ -38,16 +38,27 @@ class ProxmoxContainer(SSHconnectable):
         stdin, stdout, stderr = client.exec_command(command)
         exit_code = stdout.channel.recv_exit_status()
         if exit_code != 0:
-            pprint.error(f"Failed to execute command: {command}")
-            pprint.info("Traceback:")
-            for line in stderr.readlines():
-                pprint.normal(line.strip())
+            pprint.error(
+                f"Failed to execute command: {command}. Exit code: {exit_code}"
+            )
+            output = stdout.readlines()
+            if output:
+                pprint.info("Info:")
+                for line in output:
+                    pprint.normal(line.strip())
+            traceback = stderr.readlines()
+            if traceback:
+                pprint.info("Traceback:")
+                for line in traceback:
+                    pprint.normal(line.strip())
             sys.exit(1)
         else:
             pprint.success(f"Success execute command: {command}")
-            pprint.info("Output:")
-            for line in stdout.readlines():
-                pprint.normal(line.strip())
+            output = stdout.readlines()
+            if output:
+                pprint.info("Output:")
+                for line in output:
+                    pprint.normal(line.strip())
 
     def __str__(self):
         return f"CT {self.vmid}: {self.name}"

@@ -1,28 +1,20 @@
 [tool.poetry]
 name = "pve-utils"
-version = "0.1.0"
+version = "1.0.0"
 description = "Utils to work with proxmox api"
 authors = ["penkhasoveg <pen.egor2002@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-# homepage = "https://github.com/johnfraney/flake8-markdown"
-# repository = "https://github.com/johnfraney/flake8-markdown"
-keywords = ["flake8", "markdown", "lint"]
-classifiers = [
-    "Environment :: Console",
-    "Framework :: Flake8",
-    "Operating System :: OS Independent",
-    "Topic :: Software Development :: Documentation",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: Quality Assurance",
-]
+homepage = "https://github.com/ghettoDdOS/pve-utils"
+repository = "https://github.com/ghettoDdOS/pve-utils"
+keywords = ["pve", "proxmox"]
 include = [
     "LICENSE",
 ]
 
 [tool.poetry.scripts]
-create_lxc = "pve_utils.commands:create_lxc"
-shell_lxc = "pve_utils.commands:shell_lxc"
+create-lxc = "pve_utils.commands:create_lxc"
+shell-lxc = "pve_utils.commands:shell_lxc"
 
 [tool.black]
 line-length = 79

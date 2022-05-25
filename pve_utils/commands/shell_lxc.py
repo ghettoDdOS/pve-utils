@@ -1,3 +1,5 @@
+import sys
+
 import click
 from proxmoxer import ProxmoxAPI
 
@@ -29,6 +31,8 @@ def shell_lxc(node_name: str, host_name: str, command: str):
 
     node_worker = ProxmoxNode(conn, node_name)
     ct = node_worker.get_lxc(host_name, create=False)
+    if not ct:
+        sys.exit(1)
     ct.exec([command])
 
 

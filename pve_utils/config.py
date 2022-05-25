@@ -1,7 +1,10 @@
 import os
+import sys
 from typing import Dict, get_type_hints
 
 import environ
+
+from pve_utils.utils import pprint
 
 
 class Settings:
@@ -12,11 +15,12 @@ class Settings:
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._typings = get_type_hints(cls)
-            environ.Env.read_env(
-                os.path.join(
-                    os.path.dirname(os.path.dirname(__file__)), ".env"
+            if cls._env("USE_ENV_FILE", cast=bool, default=False):
+                environ.Env.read_env(
+                    os.path.join(
+                        os.path.dirname(os.path.dirname(__file__)), ".env"
+                    )
                 )
-            )
             cls._instance = super().__new__(cls, *args, **kwargs)
         return cls._instance
 
@@ -28,7 +32,9 @@ class Settings:
             return attr
         if key in dir(Settings):
             return super().__getattribute__(key)
-        return attr
+        if attr is None:
+            pprint.error(f"Variable {key} dosen`t exist in env")
+            sys.exit(1)
 
     PROXMOX_URL: str
     PROXMOX_PORT: int

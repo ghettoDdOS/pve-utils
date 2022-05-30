@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import List
 
@@ -33,6 +34,37 @@ class ProxmoxContainer(SSHconnectable):
         )
         for command in commands:
             self.run_command(client, command)
+
+    @with_ssh
+    def upload(
+        self,
+        client: SSHClient,
+        host_path: str,
+        container_path: str,
+    ) -> None:
+        pprint.info(
+            f"Upload {host_path} on CT: {self.vmid} to "
+            f"{self.host}:{self.port}{container_path} as: {self.user}"
+        )
+        sftp = client.open_sftp()
+        try:
+            abs_path = os.path.abspath(host_path)
+            file_name = os.path.basename(abs_path)
+            container_path = (
+                container_path
+                if container_path.endswith(file_name)
+                else f"{container_path}{file_name}"
+                if container_path.endswith("/")
+                else f"{container_path}/{file_name}"
+            )
+            sftp.put(abs_path, container_path)
+        except Exception as e:
+            pprint.error(
+                f"Failed to upload {host_path} on CT: {self.vmid} "
+                f"{self.host}:{self.port}{container_path} as: {self.user}"
+            )
+            pprint.info("Traceback:")
+            pprint.normal(e)
 
     def run_command(self, client: SSHClient, command: str) -> None:
         stdin, stdout, stderr = client.exec_command(command)

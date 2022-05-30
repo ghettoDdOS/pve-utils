@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pve-utils"
-version = "1.0.0"
+version = "1.1.0"
 description = "Utils to work with proxmox api"
 authors = ["penkhasoveg <pen.egor2002@gmail.com>"]
 license = "MIT"
@@ -15,6 +15,7 @@ include = [
 [tool.poetry.scripts]
 create-lxc = "pve_utils.commands:create_lxc"
 shell-lxc = "pve_utils.commands:shell_lxc"
+transport-lxc = "pve_utils.commands:transport_lxc"
 
 [tool.black]
 line-length = 79

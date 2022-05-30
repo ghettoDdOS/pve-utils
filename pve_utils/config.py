@@ -41,6 +41,8 @@ class Settings:
     PROXMOX_USER: str
     PROXMOX_PASSWORD: str
     PROXMOX_VERIFY_SSL: bool = False
+    PROXMOX_NODE: str
+    CT_HOST: str
     CT_STORAGE: str
     CT_OS_TEMPLATE: str
     CT_PASSWORD: str

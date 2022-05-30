@@ -37,20 +37,15 @@ class ProxmoxNode:
         cores: int = 4,
         memory: int = 4096,
         start: bool = True,
-        password: Optional[str] = None,
-        ostemplate: Optional[str] = None,
+        password: Optional[str] = settings.CT_PASSWORD,
+        ostemplate: Optional[str] = settings.CT_OS_TEMPLATE,
         vmid: Optional[int] = None,
-        storage: Optional[str] = None,
+        storage: Optional[str] = settings.CT_STORAGE,
+        nameserver: Optional[str] = settings.CT_HOST,
         **kwargs,
     ) -> Optional[ProxmoxContainer]:
         if not vmid:
             vmid = self.__get_next_free_vmid()
-        if not password:
-            password = settings.CT_PASSWORD
-        if not ostemplate:
-            ostemplate = settings.CT_OS_TEMPLATE
-        if not storage:
-            storage = settings.CT_STORAGE
         net_config = (
             f"name={settings.CT_NET_NAME},"
             f"bridge={settings.CT_NET_BRIDGE},"
@@ -79,6 +74,7 @@ class ProxmoxNode:
                 storage=storage,
                 start=int(start),
                 net0=net_config,
+                nameserver=nameserver,
             )
             pprint.success(f"Successfully created CT: {vmid} {hostname}")
             return ProxmoxContainer(self.node, hostname, vmid)

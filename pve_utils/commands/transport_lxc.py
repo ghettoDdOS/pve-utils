@@ -9,9 +9,21 @@ from pve_utils.resources import ProxmoxNode
 
 @click.command()
 @click.option(
-    "-N", "--node-name", required=True, type=str, help="Name of Proxmox Node."
+    "-N",
+    "--node-name",
+    default=settings.PROXMOX_NODE,
+    required=False,
+    type=str,
+    help="Name of Proxmox Node.",
 )
-@click.option("-H", "--host-name", required=True, type=str, help="Name of CT.")
+@click.option(
+    "-H",
+    "--host-name",
+    default=settings.CT_HOST,
+    required=False,
+    type=str,
+    help="Name of CT.",
+)
 @click.argument("host_path")
 @click.argument("container_path")
 def transport_lxc(

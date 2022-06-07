@@ -46,11 +46,23 @@ class Settings:
     CT_STORAGE: str
     CT_OS_TEMPLATE: str
     CT_PASSWORD: str
-    CT_NET_NAME: str
-    CT_NET_BRIDGE: str
+    CT_NET_NAME: str = "eth0"
+    CT_NET_BRIDGE: str = "vmbr0"
     CT_IP: str
     CT_GW: str
     CT_CIDR: int
+    CT_POOL: str
+    CT_START: bool = True
+    CT_MEMORY: int = 4096
+    CT_SWAP: int = 1024
+    CT_CORES: int = 4
+    CT_UNPRIVILEGED: bool = True
+    CT_FEATURES: str = "nesting=1"
+    CT_ONBOOT: bool = True
+    CT_ROOTFS: str
+    CT_FIREWALL: bool = True
+    CT_SEARCHDOMAIN: str
+    CT_NAMESERVER: str
 
 
 settings = Settings()

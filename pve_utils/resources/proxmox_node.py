@@ -34,14 +34,21 @@ class ProxmoxNode:
     def create_lxc(
         self,
         hostname: str,
-        cores: int = 4,
-        memory: int = 4096,
-        start: bool = True,
+        cores: Optional[int] = settings.CT_CORES,
+        memory: Optional[int] = settings.CT_MEMORY,
+        swap: Optional[int] = settings.CT_SWAP,
+        start: Optional[bool] = settings.CT_START,
+        pool: Optional[str] = settings.CT_POOL,
         password: Optional[str] = settings.CT_PASSWORD,
         ostemplate: Optional[str] = settings.CT_OS_TEMPLATE,
-        vmid: Optional[int] = None,
         storage: Optional[str] = settings.CT_STORAGE,
-        nameserver: Optional[str] = settings.CT_HOST,
+        unprivileged: Optional[bool] = settings.CT_UNPRIVILEGED,
+        features: Optional[str] = settings.CT_FEATURES,
+        onboot: Optional[bool] = settings.CT_ONBOOT,
+        rootfs: Optional[str] = settings.CT_ROOTFS,
+        searchdomain: Optional[str] = settings.CT_SEARCHDOMAIN,
+        nameserver: Optional[str] = settings.CT_NAMESERVER,
+        vmid: Optional[int] = None,
         **kwargs,
     ) -> Optional[ProxmoxContainer]:
         if not vmid:
@@ -50,7 +57,8 @@ class ProxmoxNode:
             f"name={settings.CT_NET_NAME},"
             f"bridge={settings.CT_NET_BRIDGE},"
             f"ip={settings.CT_IP}/{settings.CT_CIDR},"
-            f"gw={settings.CT_GW}"
+            f"gw={settings.CT_GW},"
+            f"firewall={int(settings.CT_FIREWALL)}"
         )
         try:
             pprint.info(
@@ -70,11 +78,18 @@ class ProxmoxNode:
                 cores=cores,
                 memory=memory,
                 hostname=hostname,
+                swap=swap,
+                pool=pool,
                 password=password,
                 storage=storage,
                 start=int(start),
-                net0=net_config,
+                unprivileged=int(unprivileged),
+                onboot=int(onboot),
+                features=features,
+                rootfs=rootfs,
+                searchdomain=searchdomain,
                 nameserver=nameserver,
+                net0=net_config,
             )
             pprint.success(f"Successfully created CT: {vmid} {hostname}")
             return ProxmoxContainer(self.node, hostname, vmid)

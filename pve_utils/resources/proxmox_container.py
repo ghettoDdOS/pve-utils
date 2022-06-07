@@ -1,5 +1,7 @@
 import os
+import socket
 import sys
+import time
 from typing import List
 
 from paramiko import SSHClient
@@ -48,16 +50,19 @@ class ProxmoxContainer(SSHconnectable):
         )
         sftp = client.open_sftp()
         try:
-            abs_path = os.path.abspath(host_path)
-            file_name = os.path.basename(abs_path)
-            container_path = (
-                container_path
-                if container_path.endswith(file_name)
-                else f"{container_path}{file_name}"
-                if container_path.endswith("/")
-                else f"{container_path}/{file_name}"
-            )
-            sftp.put(abs_path, container_path)
+            host_path = os.path.abspath(host_path)
+            file_name = os.path.basename(host_path)
+            if os.path.isdir(host_path):
+                self.upload_dir(sftp, host_path, container_path)
+            else:
+                container_path = (
+                    container_path
+                    if container_path.endswith(file_name)
+                    else f"{container_path}{file_name}"
+                    if container_path.endswith("/")
+                    else f"{container_path}/{file_name}"
+                )
+                sftp.put(host_path, container_path)
         except Exception as e:
             pprint.error(
                 f"Failed to upload {host_path} on CT: {self.vmid} "
@@ -65,6 +70,45 @@ class ProxmoxContainer(SSHconnectable):
             )
             pprint.info("Traceback:")
             pprint.normal(e)
+            sys.exit(1)
+
+    def ssh_wait(self, wait_limit=600):
+        wait_limit = wait_limit + time.time()
+        while time.time() < wait_limit:
+            try:
+                socket.create_connection((self.host, "ssh"), 0.1)
+                pprint.success("CT is started")
+                return
+            except (socket.error, socket.timeout, socket.gaierror):
+                time.sleep(0.1)
+        pprint.error("CT is not aviable")
+        sys.exit(1)
+
+    def upload_dir(self, sftp, source, target):
+        for item in os.listdir(source):
+            if os.path.isfile(os.path.join(source, item)):
+                sftp.put(
+                    os.path.join(source, item),
+                    "%s/%s" % (target, item),
+                )
+            else:
+                self.mkdir(
+                    sftp, "%s/%s" % (target, item), ignore_existing=True
+                )
+                self.put_dir(
+                    sftp,
+                    os.path.join(source, item),
+                    "%s/%s" % (target, item),
+                )
+
+    def mkdir(self, sftp, path, mode=511, ignore_existing=False):
+        try:
+            sftp.mkdir(path, mode)
+        except IOError:
+            if ignore_existing:
+                pass
+            else:
+                raise
 
     def run_command(self, client: SSHClient, command: str) -> None:
         stdin, stdout, stderr = client.exec_command(command)

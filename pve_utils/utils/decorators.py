@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 from typing import Callable
 
@@ -30,6 +31,7 @@ def with_ssh(func) -> Callable:
             pprint.error(f"Failed to connect: {self.host}")
             pprint.info("Traceback:")
             pprint.normal(e)
+            sys.exit(1)
 
         return func(self, client, *args, **kwargs)
         client.close()

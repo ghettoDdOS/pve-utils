@@ -4,6 +4,8 @@ from proxmoxer import ProxmoxAPI
 from pve_utils.config import settings
 from pve_utils.resources import ProxmoxNode
 
+from pve_utils.utils import pprint
+
 
 @click.command()
 @click.option(
@@ -40,7 +42,10 @@ def create_lxc(node_name: str, host_name: str, create: bool):
     )
 
     node_worker = ProxmoxNode(conn, node_name)
-    node_worker.get_lxc(host_name, create=create)
+    ct = node_worker.get_lxc(host_name, create=create)
+    if create:
+        pprint.info("Waiting for the CT to start")
+        ct.ssh_wait()
 
 
 if __name__ == "__main__":

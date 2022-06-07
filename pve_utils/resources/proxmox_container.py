@@ -20,8 +20,8 @@ class ProxmoxContainer(SSHconnectable):
         self.name = name
         self.vmid = vmid
         self.host = settings.CT_IP
-        self.port = 22
-        self.user = "root"
+        self.port = settings.CT_SSH_PORT
+        self.user = settings.CT_USER
         self.password = settings.CT_PASSWORD
         self.ct = self.__get_ct()
 

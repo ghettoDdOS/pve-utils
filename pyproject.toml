@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pve-utils"
-version = "1.1.1"
+version = "1.2.2"
 description = "Utils to work with proxmox api"
 authors = ["penkhasoveg <pen.egor2002@gmail.com>"]
 license = "MIT"

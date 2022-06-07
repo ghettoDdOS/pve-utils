@@ -63,6 +63,8 @@ class Settings:
     CT_FIREWALL: bool = True
     CT_SEARCHDOMAIN: str
     CT_NAMESERVER: str
+    CT_SSH_PORT: int = 22
+    CT_USER: str
 
 
 settings = Settings()

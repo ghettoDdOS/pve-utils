@@ -1,10 +1,9 @@
 import os
-import socket
 import sys
 import time
 from typing import List
 
-from paramiko import SSHClient
+from paramiko import AutoAddPolicy, SSHClient, SSHException
 
 from pve_utils.config import settings
 from pve_utils.utils import SSHconnectable, pprint
@@ -75,11 +74,11 @@ class ProxmoxContainer(SSHconnectable):
     def ssh_wait(self, wait_limit=600):
         wait_limit = wait_limit + time.time()
         while time.time() < wait_limit:
-            try:
-                socket.create_connection((self.host, "ssh"), 0.1)
+            response = os.system(f"ping -c 1 {self.host}")
+            if response == 0:
                 pprint.success("CT is started")
                 return
-            except (socket.error, socket.timeout, socket.gaierror):
+            else:
                 time.sleep(0.1)
         pprint.error("CT is not aviable")
         sys.exit(1)

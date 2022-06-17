@@ -18,9 +18,9 @@ class ProxmoxNode:
         self.conn = conn
         self.name = name
         self.node = self.conn.nodes(self.name)
-        self.lxc = self.__get_aviable_lxc()
+        self.lxc = self.__get_available_lxc()
 
-    def __get_aviable_lxc(self) -> List[ProxmoxContainer]:
+    def __get_available_lxc(self) -> List[ProxmoxContainer]:
         return [
             ProxmoxContainer(
                 node=self.node, vmid=ct.pop("vmid"), name=ct.pop("name"), **ct

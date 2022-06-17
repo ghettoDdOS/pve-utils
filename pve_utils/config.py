@@ -32,9 +32,10 @@ class Settings:
             return attr
         if key in dir(Settings):
             return super().__getattribute__(key)
-        if attr is None:
-            pprint.error(f"Variable {key} dosen`t exist in env")
-            sys.exit(1)
+        # if attr is None:
+        #     pprint.error(f"Variable {key} dosen`t exist in env")
+        #     sys.exit(1)
+        return attr
 
     PROXMOX_URL: str
     PROXMOX_PORT: int

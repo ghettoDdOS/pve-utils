@@ -13,8 +13,7 @@ def with_ssh(func) -> Callable:
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         assert issubclass(type(self), SSHconnectable), (
-            "Декторатор with_ssh можно использовать"
-            "только для классов SSHconnectable"
+            'Декторатор with_ssh можно использовать' 'только для классов SSHconnectable'
         )
 
         client = paramiko.SSHClient()
@@ -26,10 +25,10 @@ def with_ssh(func) -> Callable:
                 username=self.user,
                 password=self.password,
             )
-            pprint.success(f"Successfully connected to SSH: {self.host}")
+            pprint.success(f'Successfully connected to SSH: {self.host}')
         except paramiko.SSHException as e:
-            pprint.error(f"Failed to connect: {self.host}")
-            pprint.info("Traceback:")
+            pprint.error(f'Failed to connect: {self.host}')
+            pprint.info('Traceback:')
             pprint.normal(e)
             sys.exit(1)
 
@@ -39,4 +38,4 @@ def with_ssh(func) -> Callable:
     return wrapper
 
 
-__all__ = ("with_ssh",)
+__all__ = ('with_ssh',)

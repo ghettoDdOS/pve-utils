@@ -1,3 +1,3 @@
 from .ssh import SSHconnectable
 
-__all__ = ("SSHconnectable",)
+__all__ = ('SSHconnectable',)

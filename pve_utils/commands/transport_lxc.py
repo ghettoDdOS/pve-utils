@@ -9,23 +9,23 @@ from pve_utils.resources import ProxmoxNode
 
 @click.command()
 @click.option(
-    "-N",
-    "--node-name",
+    '-N',
+    '--node-name',
     default=settings.PROXMOX_NODE,
     required=False,
     type=str,
-    help="Name of Proxmox Node.",
+    help='Name of Proxmox Node.',
 )
 @click.option(
-    "-H",
-    "--host-name",
+    '-H',
+    '--host-name',
     default=settings.CT_HOST,
     required=False,
     type=str,
-    help="Name of CT.",
+    help='Name of CT.',
 )
-@click.argument("host_path")
-@click.argument("container_path")
+@click.argument('host_path')
+@click.argument('container_path')
 def transport_lxc(
     node_name: str,
     host_name: str,
@@ -56,5 +56,5 @@ def transport_lxc(
     ct.upload(host_path, container_path)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     transport_lxc()

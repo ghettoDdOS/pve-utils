@@ -23,7 +23,7 @@ class ProxmoxNode:
     def __get_available_lxc(self) -> List[ProxmoxContainer]:
         return [
             ProxmoxContainer(
-                node=self.node, vmid=ct.pop("vmid"), name=ct.pop("name"), **ct
+                node=self.node, vmid=ct.pop('vmid'), name=ct.pop('name'), **ct
             )
             for ct in self.node.lxc.get()
         ]
@@ -54,23 +54,23 @@ class ProxmoxNode:
         if not vmid:
             vmid = self.__get_next_free_vmid()
         net_config = (
-            f"name={settings.CT_NET_NAME},"
-            f"bridge={settings.CT_NET_BRIDGE},"
-            f"ip={settings.CT_IP}/{settings.CT_CIDR},"
-            f"gw={settings.CT_GW},"
-            f"firewall={int(settings.CT_FIREWALL)}"
+            f'name={settings.CT_NET_NAME},'
+            f'bridge={settings.CT_NET_BRIDGE},'
+            f'ip={settings.CT_IP}/{settings.CT_CIDR},'
+            f'gw={settings.CT_GW},'
+            f'firewall={int(settings.CT_FIREWALL)}'
         )
         try:
             pprint.info(
-                "Creating CT: \n"
-                f"   vmid={vmid}, \n"
-                f"   ostemplate={ostemplate}, \n"
-                f"   cores={cores}, \n"
-                f"   memory={memory}, \n"
-                f"   hostname={hostname}, \n"
-                f"   password={password}, \n"
-                f"   storage={storage}, \n"
-                f"   net0={net_config}"
+                'Creating CT: \n'
+                f'   vmid={vmid}, \n'
+                f'   ostemplate={ostemplate}, \n'
+                f'   cores={cores}, \n'
+                f'   memory={memory}, \n'
+                f'   hostname={hostname}, \n'
+                f'   password={password}, \n'
+                f'   storage={storage}, \n'
+                f'   net0={net_config}'
             )
             self.node.lxc.post(
                 vmid=vmid,
@@ -91,23 +91,21 @@ class ProxmoxNode:
                 nameserver=nameserver,
                 net0=net_config,
             )
-            pprint.success(f"Successfully created CT: {vmid} {hostname}")
+            pprint.success(f'Successfully created CT: {vmid} {hostname}')
             return ProxmoxContainer(self.node, hostname, vmid)
         except Exception as e:
-            pprint.error(f"Failed to create CT: {vmid}")
-            pprint.info("Tracebak:")
+            pprint.error(f'Failed to create CT: {vmid}')
+            pprint.info('Tracebak:')
             pprint.normal(e)
             sys.exit(1)
 
-    def get_lxc(
-        self, name: str, create: bool = False
-    ) -> Optional[ProxmoxContainer]:
+    def get_lxc(self, name: str, create: bool = False) -> Optional[ProxmoxContainer]:
         filtered_ct = [ct for ct in self.lxc if ct.name == name]
         if len(filtered_ct) > 0:
-            pprint.info(f"Container: {name} already exist")
+            pprint.info(f'Container: {name} already exist')
             return filtered_ct[0]
         elif len(filtered_ct) < 1:
-            pprint.info(f"Container: {name} does not exist")
+            pprint.info(f'Container: {name} does not exist')
             if create:
                 return self.create_lxc(name)
         return None

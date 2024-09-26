@@ -9,22 +9,22 @@ from pve_utils.resources import ProxmoxNode
 
 @click.command()
 @click.option(
-    "-N",
-    "--node-name",
+    '-N',
+    '--node-name',
     default=settings.PROXMOX_NODE,
     required=False,
     type=str,
-    help="Name of Proxmox Node.",
+    help='Name of Proxmox Node.',
 )
 @click.option(
-    "-H",
-    "--host-name",
+    '-H',
+    '--host-name',
     default=settings.CT_HOST,
     required=False,
     type=str,
-    help="Name of CT.",
+    help='Name of CT.',
 )
-@click.argument("command")
+@click.argument('command')
 def shell_lxc(node_name: str, host_name: str, command: str):
     """
     Run commands in CT via SSH
@@ -48,5 +48,5 @@ def shell_lxc(node_name: str, host_name: str, command: str):
     ct.exec([command])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     shell_lxc()

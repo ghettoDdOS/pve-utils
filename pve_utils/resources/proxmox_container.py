@@ -3,7 +3,7 @@ import sys
 import time
 from typing import List
 
-from paramiko import AutoAddPolicy, SSHClient, SSHException
+from paramiko import SSHClient
 
 from pve_utils.config import settings
 from pve_utils.utils import SSHconnectable, pprint
@@ -30,8 +30,8 @@ class ProxmoxContainer(SSHconnectable):
     @with_ssh
     def exec(self, client: SSHClient, commands: List[str]) -> None:
         pprint.info(
-            f"Run commands on CT: {self.vmid} "
-            f"{self.host}:{self.port} as: {self.user}"
+            f'Run commands on CT: {self.vmid} '
+            f'{self.host}:{self.port} as: {self.user}'
         )
         for command in commands:
             self.run_command(client, command)
@@ -44,8 +44,8 @@ class ProxmoxContainer(SSHconnectable):
         container_path: str,
     ) -> None:
         pprint.info(
-            f"Upload {host_path} on CT: {self.vmid} to "
-            f"{self.host}:{self.port}{container_path} as: {self.user}"
+            f'Upload {host_path} on CT: {self.vmid} to '
+            f'{self.host}:{self.port}{container_path} as: {self.user}'
         )
         sftp = client.open_sftp()
         try:
@@ -57,30 +57,30 @@ class ProxmoxContainer(SSHconnectable):
                 container_path = (
                     container_path
                     if container_path.endswith(file_name)
-                    else f"{container_path}{file_name}"
-                    if container_path.endswith("/")
-                    else f"{container_path}/{file_name}"
+                    else f'{container_path}{file_name}'
+                    if container_path.endswith('/')
+                    else f'{container_path}/{file_name}'
                 )
                 sftp.put(host_path, container_path)
         except Exception as e:
             pprint.error(
-                f"Failed to upload {host_path} on CT: {self.vmid} "
-                f"{self.host}:{self.port}{container_path} as: {self.user}"
+                f'Failed to upload {host_path} on CT: {self.vmid} '
+                f'{self.host}:{self.port}{container_path} as: {self.user}'
             )
-            pprint.info("Traceback:")
+            pprint.info('Traceback:')
             pprint.normal(e)
             sys.exit(1)
 
     def ssh_wait(self, wait_limit=600):
         wait_limit = wait_limit + time.time()
         while time.time() < wait_limit:
-            response = os.system(f"ping -c 1 {self.host}")
+            response = os.system(f'ping -c 1 {self.host}')
             if response == 0:
-                pprint.success("CT is started")
+                pprint.success('CT is started')
                 return
             else:
                 time.sleep(0.1)
-        pprint.error("CT is not aviable")
+        pprint.error('CT is not aviable')
         sys.exit(1)
 
     def upload_dir(self, sftp, source, target):
@@ -88,16 +88,14 @@ class ProxmoxContainer(SSHconnectable):
             if os.path.isfile(os.path.join(source, item)):
                 sftp.put(
                     os.path.join(source, item),
-                    "%s/%s" % (target, item),
+                    '%s/%s' % (target, item),
                 )
             else:
-                self.mkdir(
-                    sftp, "%s/%s" % (target, item), ignore_existing=True
-                )
+                self.mkdir(sftp, '%s/%s' % (target, item), ignore_existing=True)
                 self.put_dir(
                     sftp,
                     os.path.join(source, item),
-                    "%s/%s" % (target, item),
+                    '%s/%s' % (target, item),
                 )
 
     def mkdir(self, sftp, path, mode=511, ignore_existing=False):
@@ -114,26 +112,26 @@ class ProxmoxContainer(SSHconnectable):
         exit_code = stdout.channel.recv_exit_status()
         if exit_code != 0:
             pprint.error(
-                f"Failed to execute command: {command}. Exit code: {exit_code}"
+                f'Failed to execute command: {command}. Exit code: {exit_code}'
             )
             output = stdout.readlines()
             if output:
-                pprint.info("Info:")
+                pprint.info('Info:')
                 for line in output:
                     pprint.normal(line.strip())
             traceback = stderr.readlines()
             if traceback:
-                pprint.info("Traceback:")
+                pprint.info('Traceback:')
                 for line in traceback:
                     pprint.normal(line.strip())
             sys.exit(1)
         else:
-            pprint.success(f"Success execute command: {command}")
+            pprint.success(f'Success execute command: {command}')
             output = stdout.readlines()
             if output:
-                pprint.info("Output:")
+                pprint.info('Output:')
                 for line in output:
                     pprint.normal(line.strip())
 
     def __str__(self):
-        return f"CT {self.vmid}: {self.name}"
+        return f'CT {self.vmid}: {self.name}'
